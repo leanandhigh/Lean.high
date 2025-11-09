@@ -1834,7 +1834,7 @@
                     });
                 -- 
 
-                -- Watermark
+                -- 
                     Items.Watermark = Library:Create( "Frame" , {
                         Parent = Library.Items;
                         Name = "\0";
@@ -1898,7 +1898,7 @@
                         TextColor3 = rgb(239, 239, 239);
                         BorderColor3 = rgb(0, 0, 0);
                         RichText = true;
-                        Text = Cfg.Name .. "lua";
+                        Text = Cfg.Name;
                         Parent = Items.Watermark;
                         Name = "\0";
                         BackgroundTransparency = 1;
