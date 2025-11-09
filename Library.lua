@@ -16,7 +16,7 @@
 
 -- Library init
     getgenv().Library = {
-        Directory = "Bbot v3",
+        Directory = "Robloxsense",
         Folders = {
             "/fonts",
             "/configs",
@@ -1373,7 +1373,7 @@
     -- Library element functions
         function Library:Window(properties)
             local Cfg = {
-                Name = properties.Name or "nebula";
+                Name = properties.Name or "Robloxsense";
                 Size = properties.Size or dim2(0, 455, 0, 605);
                 TabInfo;
                 Items = {};
@@ -1898,7 +1898,7 @@
                         TextColor3 = rgb(239, 239, 239);
                         BorderColor3 = rgb(0, 0, 0);
                         RichText = true;
-                        Text = Cfg.Name .. "lua";
+                        Text = Cfg.Name .. "";
                         Parent = Items.Watermark;
                         Name = "\0";
                         BackgroundTransparency = 1;
@@ -1925,7 +1925,7 @@
                     Library:Create( "ImageLabel" , {
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = Items.Watermark;
-                        Image = "rbxassetid://133601737414791";
+                        Image = "rbxassetid://70912489368548";
                         BackgroundTransparency = 1;
                         Position = dim2(0, 3, 0, 2);
                         Size = dim2(0, 11, 0, 15);
@@ -2226,6 +2226,26 @@
                     BackgroundColor3 = themes.preset.outline
                 }); Library:Themify(Items.Outline, "outline", "BackgroundColor3")
                 
+                Items.PriorityHolder = Library:Create( "Frame" , {
+                    Parent = Items.Outline;
+                    Name = "\0";
+                    Position = dim2(0, 1, 0, 19);
+                    BorderColor3 = rgb(0, 0, 0);
+                    Size = dim2(1, -2, 0, 18);
+                    BorderSizePixel = 0;
+                    BackgroundColor3 = themes.preset.outline
+                }); Library:Themify(Items.PriorityHolder, "outline", "BackgroundColor3")
+                
+                Items.Inline = Library:Create( "Frame" , {
+                    Parent = Items.PriorityHolder;
+                    Name = "\0";
+                    Position = dim2(0, 1, 0, 1);
+                    BorderColor3 = rgb(0, 0, 0);
+                    Size = dim2(1, -2, 1, -2);
+                    BorderSizePixel = 0;
+                    BackgroundColor3 = themes.preset.inline
+                }); Library:Themify(Items.Inline, "inline", "BackgroundColor3")
+                
                 Items.Background = Library:Create( "Frame" , {
                     Parent = Items.Inline;
                     Name = "\0";
@@ -2290,6 +2310,22 @@
                 Library:Create( "UIStroke" , {
                     Parent = Items.UITitle;
                     LineJoinMode = Enum.LineJoinMode.Miter
+                });
+                
+                Items.UITitle = Library:Create( "TextLabel" , {
+                    LayoutOrder = -1;
+                    FontFace = Library.Font;
+                    TextColor3 = themes.preset.text_color;
+                    BorderColor3 = rgb(0, 0, 0);
+                    Text = "Priority";
+                    Parent = Items.Background;
+                    Name = "\0";
+                    BackgroundTransparency = 1;
+                    Size = dim2(1, 0, 1, 0);
+                    BorderSizePixel = 0;
+                    AutomaticSize = Enum.AutomaticSize.X;
+                    TextSize = 12;
+                    BackgroundColor3 = rgb(255, 255, 255)
                 });
                 
                 Library:Create( "UIStroke" , {
@@ -2503,6 +2539,11 @@
                 });
 
                 local Parent = setmetatable(Cfg, Library)
+                Items.PriorityDropdown = Parent:Dropdown({Name = "Priority", Options = {"Friendly", "Enemy", "Neutral"}, Callback = function(option)
+                    if Cfg.ModifyPriority then 
+                        Cfg.ModifyPriority(option)
+                    end
+                end})
                 
                 Library:Create( "UIListLayout" , {
                     Parent = Items.Elements;
@@ -2588,7 +2629,88 @@
                 Library:Create( "UIStroke" , {
                     Parent = SeperateData.UserId;
                     LineJoinMode = Enum.LineJoinMode.Miter
-                });     
+                });
+                
+                SeperateData.Priority = Library:Create( "TextLabel" , {
+                    LayoutOrder = -1;
+                    FontFace = Library.Font;
+                    TextColor3 = player.Name == Players.LocalPlayer.Name and rgb(119, 119, 119) or themes.preset.text_color;
+                    BorderColor3 = rgb(0, 0, 0);
+                    Text = player.Name == Players.LocalPlayer.Name and "LocalPlayer" or "Neutral";
+                    Parent = SeperateData.Background;
+                    Name = "\0";
+                    Size = dim2(1, 0, 1, 0);
+                    BackgroundTransparency = 1;
+                    TextXAlignment = Enum.TextXAlignment.Right;
+                    BorderSizePixel = 0;
+                    AutomaticSize = Enum.AutomaticSize.X;
+                    TextSize = 12;
+                    BackgroundColor3 = rgb(255, 255, 255)
+                });
+                
+                Library:Create( "UIStroke" , {
+                    Parent = SeperateData.Priority;
+                    LineJoinMode = Enum.LineJoinMode.Miter
+                });
+                
+                Library:Create( "UIPadding" , {
+                    PaddingRight = dim(0, 8);
+                    Parent = SeperateData.Priority
+                });               
+                
+                SeperateData.Background.MouseButton1Click:Connect(function()
+                    if SeperateData.Priority.Text == "LocalPlayer" then 
+                        return
+                    end 
+
+                    local Old = Cfg.Selected
+
+                    if Old then
+                        Old.Name.TextColor3 = themes.preset.text_color
+                        Old.UserId.TextColor3 = themes.preset.text_color
+                    end     
+
+                    SeperateData.Name.TextColor3 = themes.preset.accent
+                    SeperateData.UserId.TextColor3 = themes.preset.accent
+                    Items.ImageProfile.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.AvatarThumbnail, Enum.ThumbnailSize.Size150x150)
+
+                    Items.NameLabel.Set("Name: " .. player.Name)
+                    Items.UserIdLabel.Set("UserId: " .. player.UserId)
+                    Items.DisplayNameLabel.Set("DisplayName: " .. player.DisplayName)
+
+                    Cfg.Selected = SeperateData
+                    task.wait()
+                    Items.PriorityDropdown.Set(SeperateData.Priority.Text)
+                end)
+
+                Cfg.Players[player.Name] = SeperateData
+            end 
+            
+            function Cfg.ModifyPriority(Priority, Items)
+                local Path = Items or Cfg.Selected
+                if Path then
+                    Path.Priority.Text = Priority
+                    Path.Priority.TextColor3 = Colors[Priority]
+                end
+            end 
+
+            function Cfg.GetPriority(Player)
+                return Cfg.Players[Player].Priority.Text;
+            end     
+
+            for _,player in Players:GetPlayers() do 
+                Cfg.AddPlayer(player)
+            end
+
+            Items.Refresh.MouseButton1Click:Connect(function()
+                for _,player in Players:GetPlayers() do
+                    if player == Players.LocalPlayer then 
+                        continue 
+                    end 
+
+                    Cfg.ModifyPriority("Neutral", Cfg.Players[player.Name])
+                end
+            end)
 
             Items.Search:GetPropertyChangedSignal("Text"):Connect(function()
                 local Text = Items.Search.Text
