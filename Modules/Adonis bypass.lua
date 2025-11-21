@@ -1,17 +1,18 @@
 local Hooked = {}
 local Detected, Kill
 local FoundAC = false
-
 if getgenv().AdonisBypassEnabled then
     setthreadidentity(2)
     for i, v in getgc(true) do
         if typeof(v) == "table" then
             local DetectFunc = rawget(v, "Detected")
             local KillFunc = rawget(v, "Kill")
+
             if typeof(DetectFunc) == "function" and not Detected then
                 Detected = DetectFunc
                 FoundAC = true
-                print("[Adonis Bypass] AntiCheat Detected! Bypass activated.")
+
+                Library:Notification("Adonis Bypass", "AntiCheat Detected! Bypass Activated.", 5)
 
                 local Old
                 Old = hookfunction(Detected, function(Action, Info, NoCrash)
@@ -21,6 +22,7 @@ if getgenv().AdonisBypassEnabled then
             end
             if rawget(v, "Variables") and rawget(v, "Process") and typeof(KillFunc) == "function" and not Kill then
                 Kill = KillFunc
+
                 local Old
                 Old = hookfunction(Kill, function(Info)
                 end)
@@ -38,8 +40,7 @@ if getgenv().AdonisBypassEnabled then
             return Old(...)
         end))
     else
-        print("[Adonis Bypass] No AntiCheat detected. Nothing to bypass.")
+        Library:Notification("Adonis Bypass", "No AntiCheat Detected. Nothing to bypass.", 5)
     end
     setthreadidentity(7)
 end
-
