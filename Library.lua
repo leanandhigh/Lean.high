@@ -200,7 +200,7 @@ do
             ["Background 1"] = FromRGB(18, 18, 18),
             ["Text"] = FromRGB(255, 255, 255),
             ["Inline"] = FromRGB(34, 34, 34),
-            ["Element"] = FromRGB(34, 34, 34),
+            ["Element"] = FromRGB(18, 18, 18),
             ["Inactive Text"] = FromRGB(185, 185, 185),
             ["Border"] =  FromRGB(34, 34, 34),
             ["Background 2"] = FromRGB(18, 18, 18)
